@@ -1,0 +1,40 @@
+# Node/Next.js
+node_modules/
+.next/
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# Env
+.env
+.env.*
+
+# TypeScript
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.venv/
+.eggs/
+*.egg-info/
+
+# Editors/IDE
+.vscode/
+.idea/
+
+# Data and runs (large, generated)
+data/
+runs/
+
+# Misc
+coverage/
+pytest_cache/
