@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .chess-square {
+    @apply flex items-center justify-center cursor-pointer transition-all duration-200 relative select-none;
+    width: 70px;
+    height: 70px;
+  }
+
+  .chess-square.light {
+    @apply bg-chess-light;
+  }
+
+  .chess-square.dark {
+    @apply bg-chess-dark;
+  }
+
+  .chess-square.highlighted {
+    @apply bg-chess-highlight;
+  }
+
+  .chess-square.selected {
+    @apply bg-chess-selected;
+  }
+
+  .chess-square.last-move {
+    @apply bg-chess-last-move;
+  }
+
+  .chess-square.possible-move {
+    @apply bg-green-300;
+  }
+
+  .chess-square:hover {
+    @apply brightness-95;
+  }
+
+  .chess-piece {
+    @apply transition-all duration-200 cursor-pointer z-10;
+    font-size: 48px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .chess-piece.white {
+    @apply text-white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  }
+
+  .chess-piece.black {
+    @apply text-gray-900;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+  }
+
+  .chess-piece.moving {
+    @apply animate-piece-move;
+  }
+
+  .game-btn {
+    @apply w-full px-4 py-3 rounded-lg font-semibold text-white transition-all duration-200 transform hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(71, 85, 105, 0.3);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.5);
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.7);
+  }
+
+  .delay-75 {
+    animation-delay: 75ms;
+  }
+
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+}
