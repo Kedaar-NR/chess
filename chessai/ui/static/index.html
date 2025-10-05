@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChessAI Engine</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ChessAI Engine</h1>
+            <p>Deep learning chess engine with MCTS and alpha-beta search</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="chess-board-container">
+                <canvas id="chessBoard" width="400" height="400"></canvas>
+                <div class="board-controls">
+                    <button id="newGame">New Game</button>
+                    <button id="undoMove">Undo</button>
+                    <button id="flipBoard">Flip Board</button>
+                </div>
+            </div>
+            
+            <div class="analysis-panel">
+                <h3>Analysis</h3>
+                <div class="analysis-controls">
+                    <button id="analyzeBtn">Analyze Position</button>
+                    <button id="bestMoveBtn">Best Move</button>
+                    <input type="number" id="timeLimit" value="5" min="0.1" max="60" step="0.1">
+                    <label for="timeLimit">Time Limit (s)</label>
+                </div>
+                
+                <div class="analysis-results">
+                    <div class="score-display">
+                        <span id="score">Score: 0</span>
+                        <span id="centipawns">Centipawns: 0</span>
+                    </div>
+                    
+                    <div class="pv-display">
+                        <h4>Principal Variation:</h4>
+                        <div id="pvMoves"></div>
+                    </div>
+                    
+                    <div class="search-info">
+                        <div id="nodes">Nodes: 0</div>
+                        <div id="depth">Depth: 0</div>
+                        <div id="time">Time: 0ms</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info">
+            <div class="position-info">
+                <h4>Position</h4>
+                <div id="fenDisplay">FEN: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1</div>
+            </div>
+            
+            <div class="move-history">
+                <h4>Move History</h4>
+                <div id="moveList"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
