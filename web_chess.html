@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Engine - Visual Board</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .player-info {
+            text-align: center;
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .player-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            border: 3px solid #8B4513;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .square.light {
+            background-color: #f0d9b5;
+        }
+
+        .square.dark {
+            background-color: #b58863;
+        }
+
+        .square.highlighted {
+            background-color: #ffeb3b !important;
+            box-shadow: inset 0 0 0 3px #ff9800;
+        }
+
+        .square.last-move {
+            background-color: #4caf50 !important;
+            box-shadow: inset 0 0 0 3px #2e7d32;
+        }
+
+        .square.selected {
+            background-color: #2196f3 !important;
+            box-shadow: inset 0 0 0 3px #1976d2;
+        }
+
+        .square:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .piece {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .piece.white {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .piece.black {
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .move-log {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .move-log h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .move-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .move-entry:last-child {
+            border-bottom: none;
+        }
+
+        .move-number {
+            font-weight: bold;
+            color: #666;
+            width: 30px;
+        }
+
+        .move-white, .move-black {
+            flex: 1;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .move-white {
+            color: #333;
+        }
+
+        .move-black {
+            color: #666;
+        }
+
+        .game-status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .status-check {
+            background: #ffeb3b;
+            color: #f57c00;
+        }
+
+        .status-checkmate {
+            background: #f44336;
+            color: white;
+        }
+
+        .status-stalemate {
+            background: #9e9e9e;
+            color: white;
+        }
+
+        .status-normal {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .coordinates {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .file-coords {
+            display: flex;
+            justify-content: space-around;
+            width: 600px;
+            margin: 0 auto;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .rank-coord {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 75px;
+        }
+
+        .file-coord {
+            flex: 1;
+            text-align: center;
+        }
+
+        @keyframes movePiece {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .piece.moving {
+            animation: movePiece 0.5s ease-in-out;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>♟️ Chess Engine - Visual Board</h1>
+        
+        <div class="game-info">
+            <div class="player-info">
+                <div class="player-name">White</div>
+                <div class="player-time" id="white-time">0.0s</div>
+            </div>
+            <div class="player-info">
+                <div class="player-name">Black</div>
+                <div class="player-time" id="black-time">0.0s</div>
+            </div>
+        </div>
+
+        <div class="game-status" id="game-status">Game in progress</div>
+
+        <div class="file-coords">
+            <div class="file-coord">a</div>
+            <div class="file-coord">b</div>
+            <div class="file-coord">c</div>
+            <div class="file-coord">d</div>
+            <div class="file-coord">e</div>
+            <div class="file-coord">f</div>
+            <div class="file-coord">g</div>
+            <div class="file-coord">h</div>
+        </div>
+
+        <div class="chess-board" id="chess-board">
+            <!-- Board will be generated by JavaScript -->
+        </div>
+
+        <div class="coordinates">
+            <div class="rank-coord">8</div>
+            <div class="rank-coord">7</div>
+            <div class="rank-coord">6</div>
+            <div class="rank-coord">5</div>
+            <div class="rank-coord">4</div>
+            <div class="rank-coord">3</div>
+            <div class="rank-coord">2</div>
+            <div class="rank-coord">1</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="startNewGame()">New Game</button>
+            <button class="btn btn-success" onclick="makeAIMove()">AI Move</button>
+            <button class="btn btn-warning" onclick="undoMove()">Undo</button>
+        </div>
+
+        <div class="move-log">
+            <h3>Move Log</h3>
+            <div id="move-log-content">
+                <div class="loading">Game starting...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chess piece symbols
+        const PIECES = {
+            'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+            'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+        };
+
+        // Initial chess position
+        const INITIAL_POSITION = [
+            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+        ];
+
+        let board = JSON.parse(JSON.stringify(INITIAL_POSITION));
+        let currentPlayer = 'white';
+        let selectedSquare = null;
+        let moveHistory = [];
+        let gameStatus = 'normal';
+        let whiteTime = 0;
+        let blackTime = 0;
+        let gameStartTime = Date.now();
+
+        // Initialize the board
+        function initializeBoard() {
+            const chessBoard = document.getElementById('chess-board');
+            chessBoard.innerHTML = '';
+
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = `square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+                    square.onclick = () => handleSquareClick(row, col);
+                    
+                    const piece = board[row][col];
+                    if (piece) {
+                        const pieceElement = document.createElement('div');
+                        pieceElement.className = `piece ${piece === piece.toUpperCase() ? 'white' : 'black'}`;
+                        pieceElement.textContent = PIECES[piece];
+                        square.appendChild(pieceElement);
+                    }
+                    
+                    chessBoard.appendChild(square);
+                }
+            }
+        }
+
+        // Handle square clicks
+        function handleSquareClick(row, col) {
+            if (gameStatus !== 'normal') return;
+
+            const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            const piece = board[row][col];
+
+            if (selectedSquare) {
+                // Try to make a move
+                if (makeMove(selectedSquare.row, selectedSquare.col, row, col)) {
+                    selectedSquare = null;
+                    clearHighlights();
+                    currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+                    updateGameStatus();
+                    updateMoveLog();
+                } else {
+                    // Select new piece
+                    selectedSquare = { row, col };
+                    clearHighlights();
+                    square.classList.add('selected');
+                }
+            } else if (piece && ((piece === piece.toUpperCase() && currentPlayer === 'white') || 
+                                 (piece === piece.toLowerCase() && currentPlayer === 'black'))) {
+                // Select piece
+                selectedSquare = { row, col };
+                clearHighlights();
+                square.classList.add('selected');
+            }
+        }
+
+        // Make a move
+        function makeMove(fromRow, fromCol, toRow, toCol) {
+            const piece = board[fromRow][fromCol];
+            const targetPiece = board[toRow][toCol];
+
+            // Basic move validation
+            if (!piece) return false;
+            if (targetPiece && ((piece === piece.toUpperCase() && targetPiece === targetPiece.toUpperCase()) ||
+                               (piece === piece.toLowerCase() && targetPiece === targetPiece.toLowerCase()))) {
+                return false;
+            }
+
+            // Make the move
+            board[toRow][toCol] = piece;
+            board[fromRow][fromCol] = '';
+
+            // Add to move history
+            const moveNotation = `${String.fromCharCode(97 + fromCol)}${8 - fromRow}${String.fromCharCode(97 + toCol)}${8 - toRow}`;
+            moveHistory.push({
+                move: moveNotation,
+                piece: piece,
+                from: { row: fromRow, col: fromCol },
+                to: { row: toRow, col: toCol },
+                timestamp: Date.now()
+            });
+
+            // Update display
+            updateBoard();
+            highlightLastMove(fromRow, fromCol, toRow, toCol);
+
+            return true;
+        }
+
+        // Update the board display
+        function updateBoard() {
+            const squares = document.querySelectorAll('.square');
+            squares.forEach(square => {
+                const row = parseInt(square.dataset.row);
+                const col = parseInt(square.dataset.col);
+                const piece = board[row][col];
+                
+                square.innerHTML = '';
+                if (piece) {
+                    const pieceElement = document.createElement('div');
+                    pieceElement.className = `piece ${piece === piece.toUpperCase() ? 'white' : 'black'}`;
+                    pieceElement.textContent = PIECES[piece];
+                    square.appendChild(pieceElement);
+                }
+            });
+        }
+
+        // Clear all highlights
+        function clearHighlights() {
+            document.querySelectorAll('.square').forEach(square => {
+                square.classList.remove('selected', 'highlighted', 'last-move');
+            });
+        }
+
+        // Highlight last move
+        function highlightLastMove(fromRow, fromCol, toRow, toCol) {
+            clearHighlights();
+            const fromSquare = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"]`);
+            const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
+            if (fromSquare) fromSquare.classList.add('last-move');
+            if (toSquare) toSquare.classList.add('last-move');
+        }
+
+        // Update game status
+        function updateGameStatus() {
+            const statusElement = document.getElementById('game-status');
+            
+            // Check for check
+            if (isInCheck()) {
+                gameStatus = 'check';
+                statusElement.textContent = `${currentPlayer === 'white' ? 'White' : 'Black'} is in check!`;
+                statusElement.className = 'game-status status-check';
+            } else {
+                gameStatus = 'normal';
+                statusElement.textContent = `${currentPlayer === 'white' ? 'White' : 'Black'} to move`;
+                statusElement.className = 'game-status status-normal';
+            }
+        }
+
+        // Simple check detection
+        function isInCheck() {
+            // This is a simplified version - in a real chess engine, you'd implement proper check detection
+            return false;
+        }
+
+        // Update move log
+        function updateMoveLog() {
+            const logContent = document.getElementById('move-log-content');
+            logContent.innerHTML = '';
+
+            for (let i = 0; i < moveHistory.length; i += 2) {
+                const moveEntry = document.createElement('div');
+                moveEntry.className = 'move-entry';
+                
+                const moveNumber = Math.floor(i / 2) + 1;
+                const whiteMove = moveHistory[i];
+                const blackMove = moveHistory[i + 1];
+
+                moveEntry.innerHTML = `
+                    <div class="move-number">${moveNumber}</div>
+                    <div class="move-white">${whiteMove ? whiteMove.move : ''}</div>
+                    <div class="move-black">${blackMove ? blackMove.move : ''}</div>
+                `;
+                
+                logContent.appendChild(moveEntry);
+            }
+        }
+
+        // AI move (random for now)
+        function makeAIMove() {
+            if (gameStatus !== 'normal') return;
+
+            const legalMoves = getLegalMoves();
+            if (legalMoves.length === 0) return;
+
+            const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+            makeMove(randomMove.from.row, randomMove.from.col, randomMove.to.row, randomMove.to.col);
+            
+            currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+            updateGameStatus();
+            updateMoveLog();
+        }
+
+        // Get legal moves (simplified)
+        function getLegalMoves() {
+            const moves = [];
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const piece = board[row][col];
+                    if (piece && ((piece === piece.toUpperCase() && currentPlayer === 'white') ||
+                                 (piece === piece.toLowerCase() && currentPlayer === 'black'))) {
+                        // Add some basic moves
+                        for (let toRow = 0; toRow < 8; toRow++) {
+                            for (let toCol = 0; toCol < 8; toCol++) {
+                                if (row !== toRow || col !== toCol) {
+                                    moves.push({
+                                        from: { row, col },
+                                        to: { row: toRow, col: toCol }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return moves.slice(0, 5); // Limit to 5 moves for simplicity
+        }
+
+        // Start new game
+        function startNewGame() {
+            board = JSON.parse(JSON.stringify(INITIAL_POSITION));
+            currentPlayer = 'white';
+            selectedSquare = null;
+            moveHistory = [];
+            gameStatus = 'normal';
+            whiteTime = 0;
+            blackTime = 0;
+            gameStartTime = Date.now();
+            
+            initializeBoard();
+            updateGameStatus();
+            updateMoveLog();
+        }
+
+        // Undo last move
+        function undoMove() {
+            if (moveHistory.length === 0) return;
+            
+            const lastMove = moveHistory.pop();
+            board[lastMove.from.row][lastMove.from.col] = lastMove.piece;
+            board[lastMove.to.row][lastMove.to.col] = '';
+            
+            currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+            updateBoard();
+            updateGameStatus();
+            updateMoveLog();
+        }
+
+        // Update timers
+        function updateTimers() {
+            const now = Date.now();
+            const elapsed = (now - gameStartTime) / 1000;
+            
+            if (currentPlayer === 'white') {
+                whiteTime = elapsed;
+            } else {
+                blackTime = elapsed;
+            }
+            
+            document.getElementById('white-time').textContent = `${whiteTime.toFixed(1)}s`;
+            document.getElementById('black-time').textContent = `${blackTime.toFixed(1)}s`;
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBoard();
+            updateGameStatus();
+            
+            // Update timers every second
+            setInterval(updateTimers, 1000);
+        });
+    </script>
+</body>
+</html>
