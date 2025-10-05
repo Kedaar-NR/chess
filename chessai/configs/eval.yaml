@@ -1,0 +1,27 @@
+# Evaluation configuration
+
+evaluation:
+  opponents:
+    - name: "stockfish"
+      path: "stockfish"
+      time_control: "5+0"
+    - name: "leela"
+      path: "leela"
+      time_control: "5+0"
+
+match:
+  games: 100
+  time_control: "5+0"
+  concurrency: 1
+  output_dir: "evaluation"
+
+engine:
+  time_limit: 5.0
+  max_nodes: 10000
+  depth: 10
+  temperature: 0.0
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
