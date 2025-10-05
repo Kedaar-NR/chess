@@ -1,0 +1,35 @@
+# Reinforcement learning configuration
+
+model:
+  board_channels: 119
+  move_space: 4096
+  width: 256
+  depth: 2
+
+rl:
+  buffer_size: 100000
+  games_per_epoch: 100
+  epochs: 50
+  batch_size: 32
+  min_buffer_size: 1000
+  save_frequency: 10
+  output_dir: "runs/rl"
+  time_limit: 5.0
+  temperature: 1.0
+
+mcts:
+  c_puct: 1.0
+  dirichlet_alpha: 0.3
+  max_nodes: 10000
+  time_limit: 5.0
+
+training:
+  learning_rate: 0.0001
+  optimizer: "adamw"
+  weight_decay: 1e-4
+  mixed_precision: true
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
