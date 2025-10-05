@@ -1,0 +1,37 @@
+# Supervised training configuration
+
+model:
+  board_channels: 119
+  move_space: 4096
+  width: 256
+  depth: 2
+
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  epochs: 100
+  optimizer: "adamw"
+  weight_decay: 1e-4
+  mixed_precision: true
+  output_dir: "runs/supervised"
+  warmup_steps: 1000
+  save_frequency: 10
+
+data:
+  tfrecords_dir: "data/tfrecords"
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  min_rating: 2000
+  max_games: null
+
+loss:
+  policy_weight: 1.0
+  value_weight: 1.0
+  l2_lambda: 1e-4
+  label_smoothing: 0.1
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
