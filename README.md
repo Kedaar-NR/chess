@@ -183,3 +183,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Enjoy playing chess!** ♟️
 
 *Built with Next.js, TypeScript, and Tailwind CSS*
+<!-- noop: README touch -->
