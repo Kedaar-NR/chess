@@ -24,17 +24,14 @@ A modern, interactive chess engine built with Next.js, TypeScript, and Tailwind 
    ```bash
    cd chess-bot
    ```
-
 2. **Install dependencies:**
    ```bash
    npm install
    ```
-
 3. **Start the development server:**
    ```bash
    npm run dev
    ```
-
 4. **Open your browser:**
    Visit [http://localhost:3000](http://localhost:3000) (or the port shown in terminal)
 
